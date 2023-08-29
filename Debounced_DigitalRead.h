@@ -1,3 +1,6 @@
+#ifndef DEBOUNCEDDIGITALREAD_H
+#define DEBOUNCEDDIGITALREAD_H
+
 #include "Arduino.h"
 
 class Debounced_DigitalRead{
@@ -48,3 +51,5 @@ class Debounced_DigitalRead{
             debounceTime = d;
         }
 };
+
+#endif
