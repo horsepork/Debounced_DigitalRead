@@ -2,6 +2,7 @@
 #define DEBOUNCEDDIGITALREAD_H
 
 #include "Arduino.h"
+#include "BooleanInputBase.h"
 
 class Debounced_DigitalRead{
     public:
@@ -9,7 +10,10 @@ class Debounced_DigitalRead{
             pin = _pin;
             inputType = _inputType;
             invertedOutput = _invertedOutput; // not implemented
+            booleanBaseObject.setInputType(inputType);
         }
+
+        BooleanInputBase booleanBaseObject;
         
     private:
         uint8_t pin;
@@ -34,6 +38,7 @@ class Debounced_DigitalRead{
             if(debouncedRead != rawRead){
                 if(millis() - debounceTimer > debounceTime){
                     debouncedRead = rawRead;
+                    booleanBaseObject.setState(debouncedRead);
                     debounceTimer = millis();
                 }
             }
@@ -43,8 +48,7 @@ class Debounced_DigitalRead{
         }
 
         bool read(){
-            if(inputType == INPUT_PULLUP) return !debouncedRead;
-            return debouncedRead;
+            return booleanBaseObject.read();
         }
 
         void setDebounceTime(uint8_t d){
