@@ -33,18 +33,20 @@ class Debounced_DigitalRead{
             while(millis() - beginTimer < debounceTime * 2) update();
         }
 
-        void update(){
+        bool update(){
             rawRead = digitalRead(pin);
             if(debouncedRead != rawRead){
                 if(millis() - debounceTimer > debounceTime){
                     debouncedRead = rawRead;
                     booleanBaseObject.setState(debouncedRead);
                     debounceTimer = millis();
+                    return true;
                 }
             }
             else{
                 debounceTimer = millis();
             }
+            return false;
         }
 
         bool read(){
