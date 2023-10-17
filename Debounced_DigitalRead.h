@@ -37,6 +37,7 @@ class Debounced_DigitalRead{
             pinMode(pin, inputType);
             uint32_t beginTimer = millis();
             while(millis() - beginTimer < (debounceTime * 2)) update();
+            booleanBaseObject.setState(debouncedRead);
         }
 
         bool update(){
