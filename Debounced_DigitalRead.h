@@ -28,9 +28,15 @@ class Debounced_DigitalRead{
 
     public:
         void begin(){
+            if(inputType == INPUT_PULLUP){
+                debouncedRead = HIGH;
+            }
+            else{
+                debouncedRead = LOW;
+            }
             pinMode(pin, inputType);
             uint32_t beginTimer = millis();
-            while(millis() - beginTimer < debounceTime * 2) update();
+            while(millis() - beginTimer < (debounceTime * 2)) update();
         }
 
         bool update(){
