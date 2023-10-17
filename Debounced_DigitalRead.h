@@ -30,10 +30,7 @@ class Debounced_DigitalRead{
             booleanBaseObject.setInputType(inputType);
             pinMode(pin, inputType);
             uint32_t beginTimer = millis();
-            while(millis() - beginTimer < (debounceTime * 5)){
-                delay(1);
-                update();
-            }
+            while(millis() - beginTimer < (debounceTime * 2)) update();
             booleanBaseObject.setState(debouncedRead);
         }
 
