@@ -21,21 +21,24 @@ class Debounced_DigitalRead{
         bool invertedOutput;
         uint32_t debounceTimer;
         bool debouncedRead;
-        bool rawRead;
         bool prevRead;
         bool debug = false;
 
     public:
         void begin(){
+            debouncedRead = (inputType == INPUT_PULLUP) ? HIGH : LOW;
             booleanBaseObject.setInputType(inputType);
             pinMode(pin, inputType);
             uint32_t beginTimer = millis();
-            while(millis() - beginTimer < (debounceTime * 3)) update();
+            while(millis() - beginTimer < (debounceTime * 5)){
+                delay(1);
+                update();
+            }
             booleanBaseObject.setState(debouncedRead);
         }
 
         bool update(){
-            rawRead = digitalRead(pin);
+            bool rawRead = digitalRead(pin);
             if(debouncedRead != rawRead){
                 if(millis() - debounceTimer > debounceTime){
                     debouncedRead = rawRead;
