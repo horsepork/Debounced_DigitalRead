@@ -10,7 +10,6 @@ class Debounced_DigitalRead{
             pin = _pin;
             inputType = _inputType;
             invertedOutput = _invertedOutput; // not implemented
-            booleanBaseObject.setInputType(inputType);
         }
 
         BooleanInputBase booleanBaseObject;
@@ -28,15 +27,10 @@ class Debounced_DigitalRead{
 
     public:
         void begin(){
-            if(inputType == INPUT_PULLUP){
-                debouncedRead = HIGH;
-            }
-            else{
-                debouncedRead = LOW;
-            }
+            booleanBaseObject.setInputType(inputType);
             pinMode(pin, inputType);
             uint32_t beginTimer = millis();
-            while(millis() - beginTimer < (debounceTime * 2)) update();
+            while(millis() - beginTimer < (debounceTime * 3)) update();
             booleanBaseObject.setState(debouncedRead);
         }
 
