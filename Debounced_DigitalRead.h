@@ -13,6 +13,13 @@ class Debounced_DigitalRead{
         }
 
         BooleanInputBase booleanBaseObject;
+
+        enum DigitalReadState{
+            DR_READING,
+            DR_NEW_READ,
+            DR_NOT_READING,
+            DR_NEW_RELEASE
+        } DR_State;
         
     private:
         uint8_t pin;
@@ -35,12 +42,17 @@ class Debounced_DigitalRead{
         }
 
         bool update(){
+            if(DR_State == DR_NEW_READ) DR_State = DR_READING;
+            else if(DR_State == DR_NEW_RELEASE) DR_State = DR_NOT_READING;
+            
             bool rawRead = digitalRead(pin);
             if(debouncedRead != rawRead){
                 if(millis() - debounceTimer > debounceTime){
                     debouncedRead = rawRead;
                     booleanBaseObject.setState(debouncedRead);
                     debounceTimer = millis();
+                    if(debouncedRead) DR_State = DR_NEW_READ;
+                    else DR_State = DR_NEW_RELEASE;
                     return true;
                 }
             }
