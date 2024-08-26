@@ -38,7 +38,10 @@ class Debounced_DigitalRead{
             pinMode(pin, inputType);
             uint32_t beginTimer = millis();
             while(millis() - beginTimer < (debounceTime * 2)) update();
-            booleanBaseObject.setState(debouncedRead);
+
+            bool newReadState = debouncedRead;
+            if(invertedOutput) debouncedRead = !debouncedRead;
+            booleanBaseObject.setState(newReadState);
         }
 
         bool update(){
@@ -49,10 +52,18 @@ class Debounced_DigitalRead{
             if(debouncedRead != rawRead){
                 if(millis() - debounceTimer > debounceTime){
                     debouncedRead = rawRead;
-                    booleanBaseObject.setState(debouncedRead);
+                    bool newReadState = debouncedRead;
+                    if(invertedOutput) debouncedRead = !debouncedRead;
+                    booleanBaseObject.setState(newReadState);
                     debounceTimer = millis();
-                    if(debouncedRead) DR_State = DR_NEW_READ;
-                    else DR_State = DR_NEW_RELEASE;
+                    if(debouncedRead){
+                        if(invertedOutput) DR_State = DR_NEW_RELEASE;
+                        else DR_State = DR_NEW_READ;
+                    }
+                    else{
+                        if(invertedOutput) DR_State = DR_NEW_READ;
+                        else DR_State = DR_NEW_RELEASE;
+                    } 
                     return true;
                 }
             }
