@@ -19,9 +19,10 @@ class Debounced_DigitalRead{
             DR_NEW_READ,
             DR_NOT_READING,
             DR_NEW_RELEASE
-        } DR_State;
+        };
         
     private:
+        DigitalReadState DR_State = DR_NOT_READING;
         uint8_t pin;
         uint8_t inputType;
         uint8_t debounceTime = 10;
@@ -40,7 +41,7 @@ class Debounced_DigitalRead{
             while(millis() - beginTimer < (debounceTime * 2)) update();
 
             bool newReadState = debouncedRead;
-            if(invertedOutput) debouncedRead = !debouncedRead;
+            if(invertedOutput) newReadState = !debouncedRead;
             booleanBaseObject.setState(newReadState);
         }
 
@@ -53,7 +54,7 @@ class Debounced_DigitalRead{
                 if(millis() - debounceTimer > debounceTime){
                     debouncedRead = rawRead;
                     bool newReadState = debouncedRead;
-                    if(invertedOutput) debouncedRead = !debouncedRead;
+                    if(invertedOutput) newReadState = !debouncedRead;
                     booleanBaseObject.setState(newReadState);
                     debounceTimer = millis();
                     if(debouncedRead){
@@ -79,6 +80,14 @@ class Debounced_DigitalRead{
 
         void setDebounceTime(uint8_t d){
             debounceTime = d;
+        }
+
+        DigitalReadState GetDigitalReadState(){
+            return DR_State;
+        }
+
+        void setInverted(bool inverted){
+            invertedOutput = inverted;
         }
 };
 
